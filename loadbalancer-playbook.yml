@@ -1,0 +1,16 @@
+- name: Install loadbalancer
+  become: true
+  hosts: loadbalancer
+  tasks:
+    - name: apt-get update
+      ansible.builtin.apt:
+        update_cache: true
+    
+    - name: install packages
+      ansible.builtin.apt:
+        name: nginx
+        
+    - name: copy nginx.conf for loadbalancer
+      ansible.builtin.copy:
+        src: ./data/load_balancer.conf
+        dest: /etc/nginx/nginx.conf

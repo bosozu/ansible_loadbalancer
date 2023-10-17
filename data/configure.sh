@@ -1,0 +1,2 @@
+#!/bin/sh
+./configure --prefix=/usr/local/nginx --sbin-path=/usr/sbin --pid-path=/usr/local/nginx/nginx.pid --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_ssl_module --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --add-module=/tmp/source/lua-nginx-module-0.10.24/ --add-module=/tmp/source/ngx_devel_kit-0.3.2/ 

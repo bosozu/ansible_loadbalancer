@@ -1,0 +1,13 @@
+- name: My first play
+  hosts: webservers, loadbalancer
+  become: true #sudoers user
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+    - name: Print message
+      ansible.builtin.debug:
+        msg: HELLO MOTHERFUCKER
+
+
+- ansible.builtin.import_playbook: nginx-playbook.yml
+- ansible.builtin.import_playbook: loadbalancer-playbook.yml
