@@ -10,8 +10,10 @@ http {
     keepalive_timeout  65;
 
     upstream frontend {
-        server 192.168.0.109:8080;
-        server 192.168.0.112:8080;
+
+        {% for host in groups['webservers'] %}
+        server {{ hostvars[host].ansible_host }}:{{ port_number }};
+        {%endfor%}
     }
     
     server {

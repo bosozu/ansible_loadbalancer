@@ -1,3 +1,4 @@
 ansible.cfg
-inventory.yml
+#service_folder/
+service_folder/inventory.yml
 .vscode/

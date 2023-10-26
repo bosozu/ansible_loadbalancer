@@ -17,12 +17,12 @@ http {
         root /data/sites/;
 	
         location / {
-            index test.html;
+            index index.html;
         }
 
         location /hello_from_lua {
             default_type 'text/plain';
-            content_by_lua_file /data/sites/test.lua;
+            content_by_lua_file /data/sites/page.lua;
         }
 
         location /health {

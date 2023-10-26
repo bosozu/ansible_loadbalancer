@@ -105,46 +105,29 @@
         - make
         - make install PREFIX=/usr/local/nginx
 
-    - name: append lua in config nginx
-      ansible.builtin.command:
-        cmd: sed -i "{{item}}" /etc/nginx/nginx.conf 
-      with_items:
-        - '$i     lua_package_path "/opt/nginx/lib/lua/?.lua;;";' 
-        - '$i     include /data/sites-enabled/*;'
+    - name: generate config file
+      ansible.builtin.template:
+        src: ./data/nginx.j2
+        dest: /etc/nginx/nginx.conf
     
     - name: copy nginx service file
       ansible.builtin.copy:
         src: ./data/nginx.service
         dest: /lib/systemd/system/nginx.service
 
-    - name: copy data and configs
-      ansible.builtin.copy:
-        src: ./data/nginx1.conf
-        dest: /etc/nginx/nginx.conf
-
-        
-- name: copy nginx1 config
-  hosts: 192.168.0.109
-  become: yes
-  tasks:
-    - name: copy site files
-      ansible.builtin.copy:
-        src: ./data/sites/nginx1/
+    - name: generate HTML site files
+      ansible.builtin.template:
+        src: ./data/sites/index.j2
         dest: /data/sites/
+    
+    - name: generate LUA site files
+      ansible.builtin.template:
+        src: ./data/sites/page.j2
+        dest: /data/sites/page.lua
+      notify: 
+        - start nginx
 
-    - name: start NGINX
-      ansible.builtin.shell:
-        cmd: systemctl start nginx 
-
-- name: copy nginx2 config
-  hosts: 192.168.0.112
-  become: yes
-  tasks:        
-    - name: copy site files
-      ansible.builtin.copy:
-        src: ./data/sites/nginx2/
-        dest: /data/sites/
-
-    - name: start NGINX
-      ansible.builtin.shell:
-        cmd: systemctl start nginx 
+handlers:
+  - name: start NGINX
+    ansible.builtin.shell:
+      cmd: systemctl start nginx
