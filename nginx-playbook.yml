@@ -103,31 +103,39 @@
         chdir: /tmp/source/lua-resty-lrucache-0.13/
       with_items:
         - make
-        - make install PREFIX=/usr/local/nginx
+        - make install PREFIX=/usr/local/nginx    
+        
+    - name: copy nginx service file
+      ansible.builtin.copy:
+        src: ./data/nginx.service
+        dest: /lib/systemd/system/nginx.service
+      notify:
+        - start nginx
 
     - name: generate config file
       ansible.builtin.template:
         src: ./data/nginx.j2
         dest: /etc/nginx/nginx.conf
-    
-    - name: copy nginx service file
-      ansible.builtin.copy:
-        src: ./data/nginx.service
-        dest: /lib/systemd/system/nginx.service
-
+        
     - name: generate HTML site files
       ansible.builtin.template:
         src: ./data/sites/index.j2
-        dest: /data/sites/
+        dest: /data/sites/index.html
     
     - name: generate LUA site files
       ansible.builtin.template:
         src: ./data/sites/page.j2
         dest: /data/sites/page.lua
       notify: 
-        - start nginx
+        - restart nginx
 
-handlers:
-  - name: start NGINX
-    ansible.builtin.shell:
-      cmd: systemctl start nginx
+  handlers:
+    - name: start nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
